@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:mobile_sigma_app/controllers/auth_controller.dart';
 
 class SplashScreen extends StatelessWidget {
-  const SplashScreen({super.key});
+
+  SplashScreen({super.key});
+  AuthController authController = Get.put(AuthController());
 
   @override
   Widget build(BuildContext context) {
     // delay to move to login screen
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Future.delayed(const Duration(seconds: 2), () {
-        Get.offNamed('/login');
+      Future.delayed(const Duration(seconds: 1), () async {
+        if (await authController.checkAndRefreshToken()) {
+          Get.offNamed('/dashboard');
+        }
       });
     });
 
@@ -41,12 +46,6 @@ class SplashScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 24),
-
-            // 👇 Spinner
-            const CircularProgressIndicator(
-              strokeWidth: 2,
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
           ],
         ),
       ),
