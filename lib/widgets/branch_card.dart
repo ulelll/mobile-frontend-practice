@@ -12,7 +12,7 @@ class BranchCard extends StatelessWidget {
 
   ImageProvider _getImageProvider(String? path) {
     if (path == null || path.isEmpty) {
-      return const AssetImage('assets/default_branch.png'); //default image ntar ganti aja
+      return const AssetImage('assets/default_branch.png'); 
     } else if (path.startsWith('http')) {
       return NetworkImage(path);
     } else {

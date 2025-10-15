@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_sigma_app/pages/dashboard.dart';
+import 'package:mobile_sigma_app/pages/details%20page/branch_detail_page.dart';
 import 'package:mobile_sigma_app/pages/product_page.dart'; 
 import 'package:mobile_sigma_app/pages/splash_screen.dart';
 import 'package:mobile_sigma_app/pages/login_page.dart';
@@ -8,7 +9,9 @@ import 'package:mobile_sigma_app/pages/company_page.dart';
 import 'package:mobile_sigma_app/pages/branch_page.dart';
 import 'package:mobile_sigma_app/pages/warehouse_page.dart';
 import 'package:mobile_sigma_app/pages/user_page.dart';
-
+import 'package:mobile_sigma_app/pages/profile_page.dart';
+import 'package:mobile_sigma_app/pages/details%20page/company_detail_page.dart';
+import 'package:mobile_sigma_app/pages/details%20page/branch_detail_page.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -34,6 +37,21 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/product', page: () => const ProductPage()),
         GetPage(name: '/warehouse', page: () => const WarehousePage()),
         GetPage(name: '/user', page: () => const UserPage()),
+        GetPage(name: '/profile', page: () => ProfilePage()),
+        GetPage(
+          name: '/companydetail',
+          page: () {
+            final companyId = Get.parameters['companyId'] ?? '';
+            return CompanyDetailPage(companyId: companyId);
+          },
+        ),
+        GetPage(
+          name: '/branchdetail',
+          page: () {
+            final branchId = Get.parameters['branchId'] ?? '';
+            return BranchDetailPage(branchId: branchId);
+          },
+        ),
       ],
     );
   }

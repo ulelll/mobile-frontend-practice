@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/company_controller.dart';
 import '../widgets/company_card.dart';
 import '../widgets/sidebar_menu.dart';
+import 'details page/company_detail_page.dart';
 
 class CompanyPage extends StatefulWidget {
   const CompanyPage({super.key});
@@ -53,9 +54,21 @@ class _CompanyPageState extends State<CompanyPage> {
                           color: Color(0xFF303030),
                         ),
                       ),
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/rukia.jpg'),
-                      ),
+                        Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            Get.toNamed('/profile');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('assets/rukia.jpg'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -94,9 +107,9 @@ class _CompanyPageState extends State<CompanyPage> {
                           return CompanyCard(
                             company: company,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${company['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => CompanyDetailPage(
+                                companyId: company['id'], 
+                              ));
                             },
                           );
                         },
