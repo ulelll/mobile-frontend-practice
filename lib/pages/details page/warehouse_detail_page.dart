@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_sigma_app/controllers/details page/branch_detail_controller.dart';
+import 'package:mobile_sigma_app/controllers/details page/warehouse_detail_controller.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_header.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_chip.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_section_text.dart';
@@ -10,17 +10,18 @@ import 'package:mobile_sigma_app/widgets/details/note_section.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_action_buttons.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_header_image.dart';
 
-class BranchDetailPage extends StatelessWidget {
-  final String branchId;
 
-  const BranchDetailPage({super.key, required this.branchId});
+class WarehouseDetailPage extends StatelessWidget {
+  final String warehouseId;
+
+  const WarehouseDetailPage({super.key, required this.warehouseId});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BranchDetailController());
+    final controller = Get.put(WarehouseDetailController());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchBranchDetail(branchId);
+      controller.fetchWarehouseDetail(warehouseId);
     });
 
     return Scaffold(
@@ -33,7 +34,7 @@ class BranchDetailPage extends StatelessWidget {
           return Center(child: Text(controller.errorMessage.value));
         }
 
-        final data = controller.branchData.value;
+        final data = controller.warehouseData.value;
         if (data == null) return const Center(child: Text('No data available'));
 
         return CustomScrollView(
@@ -54,7 +55,7 @@ class BranchDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DetailHeader(
-                    title: data['name'] ?? 'Branch Name',
+                    title: data['name'] ?? 'Warehouse Name',
                     subtitle: 'Code: ${data['code_id'] ?? '-'}',
                   ),
                   if (data['category'] != null)
@@ -121,9 +122,9 @@ class BranchDetailPage extends StatelessWidget {
         snackPosition: SnackPosition.BOTTOM);
   }
 
-  void _onDelete(Map<String, dynamic> data) async {
-    final controller = Get.find<BranchDetailController>();
-    final branchId = data['id'];
+ void _onDelete(Map<String, dynamic> data) async {
+    final controller = Get.find<WarehouseDetailController>();
+    final warehouseId = data['id'];
 
     final confirm = await Get.dialog<bool>(
       AlertDialog(
@@ -131,7 +132,7 @@ class BranchDetailPage extends StatelessWidget {
         shadowColor: Colors.black.withOpacity(0.25),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: const Text(
-          'Delete Branch?',
+          'Delete Warehouse?',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         content: const Text('This action cannot be undone.'),
@@ -170,7 +171,7 @@ class BranchDetailPage extends StatelessWidget {
 
     // Only delete if confirmed
     if (confirm == true) {
-      final success = await controller.deleteBranch(branchId);
+      final success = await controller.deleteWarehouse(warehouseId);
 
       if (success) {
         Get.back();
@@ -178,13 +179,13 @@ class BranchDetailPage extends StatelessWidget {
         // ✅ Show success message
         Get.snackbar(
           'Deleted',
-          'Branch successfully deleted',
+          'Warehouse successfully deleted',
           snackPosition: SnackPosition.TOP,
         );
       } else {
         Get.snackbar(
           'Error',
-          'Failed to delete branch',
+          'Failed to delete warehouse',
           snackPosition: SnackPosition.TOP,
         );
       }

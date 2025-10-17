@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_sigma_app/controllers/details page/branch_detail_controller.dart';
+import 'package:mobile_sigma_app/controllers/details page/user_detail_controller.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_header.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_chip.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_section_text.dart';
@@ -9,18 +9,19 @@ import 'package:mobile_sigma_app/widgets/details/location_section.dart';
 import 'package:mobile_sigma_app/widgets/details/note_section.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_action_buttons.dart';
 import 'package:mobile_sigma_app/widgets/details/detail_header_image.dart';
+import 'package:mobile_sigma_app/routes/routes.dart';
 
-class BranchDetailPage extends StatelessWidget {
-  final String branchId;
+class UserDetailPage extends StatelessWidget {
+  final String userId;
 
-  const BranchDetailPage({super.key, required this.branchId});
+  const UserDetailPage({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BranchDetailController());
+    final controller = Get.put(UserDetailController());
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      controller.fetchBranchDetail(branchId);
+      controller.fetchUserDetail(userId);
     });
 
     return Scaffold(
@@ -33,7 +34,7 @@ class BranchDetailPage extends StatelessWidget {
           return Center(child: Text(controller.errorMessage.value));
         }
 
-        final data = controller.branchData.value;
+        final data = controller.userData.value;
         if (data == null) return const Center(child: Text('No data available'));
 
         return CustomScrollView(
@@ -54,15 +55,8 @@ class BranchDetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   DetailHeader(
-                    title: data['name'] ?? 'Branch Name',
+                    title: data['full_name'] ?? 'User',
                     subtitle: 'Code: ${data['code_id'] ?? '-'}',
-                  ),
-                  if (data['category'] != null)
-                    DetailChip(label: data['category']['name']),
-                  const Divider(height: 32),
-                  DetailSectionText(
-                    title: 'About',
-                    content: data['description'] ?? '',
                   ),
                   const Divider(height: 32),
                   Padding(
@@ -90,16 +84,6 @@ class BranchDetailPage extends StatelessWidget {
                     ),
                   ),
                   const Divider(height: 32),
-                  LocationSection(
-                    address: data['address'],
-                    locationData: {
-                      'Ward': data['ward']?['name'],
-                      'Subdistrict': data['subdistrict']?['name'],
-                      'District': data['district']?['name'],
-                      'Province': data['province']?['name'],
-                    },
-                  ),
-                  const Divider(height: 32),
                   NoteSection(note: data['note']),
                   const SizedBox(height: 24),
                   DetailActionButtons(
@@ -116,14 +100,15 @@ class BranchDetailPage extends StatelessWidget {
     );
   }
 
-  void _onEdit(Map<String, dynamic> data) {
-    Get.snackbar('Edit', 'Navigate to edit page here',
-        snackPosition: SnackPosition.BOTTOM);
-  }
 
-  void _onDelete(Map<String, dynamic> data) async {
-    final controller = Get.find<BranchDetailController>();
-    final branchId = data['id'];
+//edit
+   void _onEdit(Map<String, dynamic> data) {
+    Get.toNamed('/user/edit/${data['id']}');
+}
+
+    void _onDelete(Map<String, dynamic> data) async {
+    final controller = Get.find<UserDetailController>();
+    final userId = data['id'];
 
     final confirm = await Get.dialog<bool>(
       AlertDialog(
@@ -131,7 +116,7 @@ class BranchDetailPage extends StatelessWidget {
         shadowColor: Colors.black.withOpacity(0.25),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         title: const Text(
-          'Delete Branch?',
+          'Delete User?',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
         content: const Text('This action cannot be undone.'),
@@ -170,7 +155,7 @@ class BranchDetailPage extends StatelessWidget {
 
     // Only delete if confirmed
     if (confirm == true) {
-      final success = await controller.deleteBranch(branchId);
+      final success = await controller.deleteUser(userId);
 
       if (success) {
         Get.back();
@@ -178,13 +163,13 @@ class BranchDetailPage extends StatelessWidget {
         // ✅ Show success message
         Get.snackbar(
           'Deleted',
-          'Branch successfully deleted',
+          'User successfully deleted',
           snackPosition: SnackPosition.TOP,
         );
       } else {
         Get.snackbar(
           'Error',
-          'Failed to delete branch',
+          'Failed to delete user',
           snackPosition: SnackPosition.TOP,
         );
       }

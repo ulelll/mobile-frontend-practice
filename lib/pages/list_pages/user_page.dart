@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/company_controller.dart';
-import '../widgets/company_card.dart';
-import '../widgets/sidebar_menu.dart';
-import 'details page/company_detail_page.dart';
+import 'package:mobile_sigma_app/pages/details%20page/user_detail_page.dart';
+import '../../controllers/user_controller.dart';
+import '../../widgets/user_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/routes/routes.dart';
 
-class CompanyPage extends StatefulWidget {
-  const CompanyPage({super.key});
+class UserPage extends StatefulWidget {
+  const UserPage({super.key});
 
   @override
-  State<CompanyPage> createState() => _CompanyPageState();
+  State<UserPage> createState() => _UserPageState();
 }
 
-class _CompanyPageState extends State<CompanyPage> {
+class _UserPageState extends State<UserPage> {
   bool _isSidebarOpen = false;
-  final CompanyController controller = Get.put(CompanyController());
+  final UserController controller = Get.put(UserController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchCompanies();
+    controller.fetchUsers();
   }
 
   @override
@@ -47,7 +48,7 @@ class _CompanyPageState extends State<CompanyPage> {
                         },
                       ),
                       const Text(
-                        "Company",
+                        "Users",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -76,7 +77,7 @@ class _CompanyPageState extends State<CompanyPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search company...",
+                      hintText: "Search user...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -96,19 +97,19 @@ class _CompanyPageState extends State<CompanyPage> {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.companies.isEmpty) {
-                        return const Center(child: Text('No companies found'));
+                      if (controller.users.isEmpty) {
+                        return const Center(child: Text('No usersfound'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.companies.length,
+                        itemCount: controller.users.length,
                         itemBuilder: (context, index) {
-                          final company = controller.companies[index];
-                          return CompanyCard(
-                            company: company,
+                          final user = controller.users[index];
+                          return UserCard(
+                            user: user,
                             onTap: () {
-                              Get.to(() => CompanyDetailPage(
-                                companyId: company['id'], 
+                              Get.to(() => UserDetailPage(
+                                userId: user['id'], 
                               ));
                             },
                           );
@@ -142,14 +143,12 @@ class _CompanyPageState extends State<CompanyPage> {
 
       //add new company button
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Company button clicked')),
-          );
+         onPressed: () {
+          Get.toNamed(Routes.userCreateRoute());
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Company",
+          "Add new user",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

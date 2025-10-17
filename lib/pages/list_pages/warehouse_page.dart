@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/user_controller.dart';
-import '../widgets/user_card.dart';
-import '../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/controllers/warehouse_controller.dart';
+import '../../widgets/warehouse_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import '../details page/warehouse_detail_page.dart';
+import 'package:mobile_sigma_app/routes/routes.dart';
 
-class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+class WarehousePage extends StatefulWidget {
+  const WarehousePage({super.key});
 
   @override
-  State<UserPage> createState() => _UserPageState();
+  State<WarehousePage> createState() => _WarehousePageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _WarehousePageState extends State<WarehousePage> {
   bool _isSidebarOpen = false;
-  final UserController controller = Get.put(UserController());
+  final  WarehouseController controller = Get.put(WarehouseController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchUsers();
+    controller.fetchWarehouses();
   }
 
   @override
@@ -46,7 +48,7 @@ class _UserPageState extends State<UserPage> {
                         },
                       ),
                       const Text(
-                        "Users",
+                        "Warehouse",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -75,7 +77,7 @@ class _UserPageState extends State<UserPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search user...",
+                      hintText: "Search warehouse...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -88,27 +90,27 @@ class _UserPageState extends State<UserPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Company List
+                  // warehause List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.users.isEmpty) {
-                        return const Center(child: Text('No usersfound'));
+                      if (controller.warehouses.isEmpty) {
+                        return const Center(child: Text('No warehouses found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.users.length,
+                        itemCount: controller.warehouses.length,
                         itemBuilder: (context, index) {
-                          final user = controller.users[index];
-                          return UserCard(
-                            user: user,
+                          final warehouse = controller.warehouses[index];
+                          return WarehouseCard(
+                            warehouse: warehouse,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${user['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => WarehouseDetailPage(
+                                warehouseId: warehouse['id'],
+                              ));
                             },
                           );
                         },
@@ -139,16 +141,14 @@ class _UserPageState extends State<UserPage> {
         ],
       ),
 
-      //add new company button
+      //add new warehouse button
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Company button clicked')),
-          );
+         onPressed: () {
+          Get.toNamed(Routes.warehouseCreateRoute());
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Company",
+          "Add Warehouse",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

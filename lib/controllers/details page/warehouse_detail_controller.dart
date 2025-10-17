@@ -1,38 +1,35 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_sigma_app/api/api_service.dart';
-import 'package:mobile_sigma_app/controllers/company_controller.dart';
+import 'package:mobile_sigma_app/controllers/warehouse_controller.dart';
 
-class CompanyDetailController extends GetxController {
-  var companyData = Rxn<Map<String, dynamic>>();
+class WarehouseDetailController extends GetxController {
+  var warehouseData = Rxn<Map<String, dynamic>>();
   var isLoading = false.obs;
   var isDeleting = false.obs;
   var errorMessage = ''.obs;
 
-  // Fetch company detail
-  Future<void> fetchCompanyDetail(String companyId) async {
+  Future<void> fetchWarehouseDetail(String warehouseId) async {
     try {
       isLoading.value = true;
       errorMessage.value = '';
 
-      final data = await ApiService.getCompanyDetail(companyId);
-
+      final data = await ApiService.getWarehousesDetail(warehouseId);
+      
       if (data != null) {
-        companyData.value = data as Map<String, dynamic>?;
+        warehouseData.value = data;
       } else {
-        errorMessage.value = 'Failed to load company details';
+        errorMessage.value = 'Failed to load warehouse details';
       }
     } catch (e) {
       errorMessage.value = 'Error: $e';
-      print('❌ Error fetching company detail: $e');
+      print('❌ Error fetching warehouse detail: $e');
     } finally {
       isLoading.value = false;
     }
   }
 
-  // Clear state when closing
   void clearData() {
-    companyData.value = null;
+    warehouseData.value = null;
     errorMessage.value = '';
   }
 
@@ -42,17 +39,16 @@ class CompanyDetailController extends GetxController {
     super.onClose();
   }
 
-  // Delete logic
-    Future<bool> deleteCompany(String companyId) async {
+   Future<bool> deleteWarehouse(String warehouseId) async {
       try {
         isLoading.value = true;
 
-        final success = await ApiService.deleteResource('companies', companyId);
+        final success = await ApiService.deleteResource('warehouses', warehouseId);
 
         if (success) {
           // Update the main list instantly
-          final companyListController = Get.find<CompanyController>();
-          companyListController.removeCompanyById(companyId);
+          final warehouseListController = Get.find<WarehouseController>();
+          warehouseListController.removeWarehouseById(warehouseId);
 
           // Show success (snackbar handled outside)
           return true;
@@ -62,11 +58,10 @@ class CompanyDetailController extends GetxController {
       } catch (e) {
         Get.snackbar('Error', 'An error occurred: $e',
             snackPosition: SnackPosition.BOTTOM);
-        print('❌ Delete company error: $e');
+        print('❌ Delete warehouse error: $e');
         return false;
       } finally {
         isLoading.value = false;
       }
     }
-
 }

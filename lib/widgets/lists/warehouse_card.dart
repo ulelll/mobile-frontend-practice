@@ -58,7 +58,7 @@ class WarehouseCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(warehouse['note'] ?? ''),
+                    Text(warehouse['description'] ?? ''),
                     const SizedBox(height: 4),
                     Text('PIC: ${warehouse['pic_name'] ?? '-'}'),
                     Text('📞 ${warehouse['pic_contact'] ?? '-'}'),

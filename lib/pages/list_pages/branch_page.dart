@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_sigma_app/controllers/warehouse_controller.dart';
-import '../controllers/company_controller.dart';
-import '../widgets/warehouse_card.dart';
-import '../widgets/sidebar_menu.dart';
+import '../../controllers/branch_controller.dart';
+import '../../widgets/branch_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import '../details page/branch_detail_page.dart';
 
-class WarehousePage extends StatefulWidget {
-  const WarehousePage({super.key});
+class BranchPage extends StatefulWidget {
+  const BranchPage({super.key});
 
   @override
-  State<WarehousePage> createState() => _WarehousePageState();
+  State<BranchPage> createState() => _BranchPageState();
 }
 
-class _WarehousePageState extends State<WarehousePage> {
+class _BranchPageState extends State<BranchPage> {
   bool _isSidebarOpen = false;
-  final  WarehouseController controller = Get.put(WarehouseController());
+  final BranchController controller = Get.put(BranchController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchWarehouses();
+    controller.fetchBranches();
   }
 
   @override
@@ -47,7 +47,7 @@ class _WarehousePageState extends State<WarehousePage> {
                         },
                       ),
                       const Text(
-                        "Warehouse",
+                        "Branch",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -76,7 +76,7 @@ class _WarehousePageState extends State<WarehousePage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search warehouse...",
+                      hintText: "Search Branch...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -89,27 +89,27 @@ class _WarehousePageState extends State<WarehousePage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // warehause List
+                  // branch List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.warehouses.isEmpty) {
-                        return const Center(child: Text('No warehouses found'));
+                      if (controller.branches.isEmpty) {
+                        return const Center(child: Text('No branches found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.warehouses.length,
+                        itemCount: controller.branches.length,
                         itemBuilder: (context, index) {
-                          final warehouse = controller.warehouses[index];
-                          return WarehouseCard(
-                            warehouse: warehouse,
+                          final branch = controller.branches[index];
+                          return BranchCard(
+                            branch: branch,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${warehouse['name']}")), //nanti ganti jadi navigasi ke page detail
-                              );
+                              Get.to(() => BranchDetailPage(
+                                branchId: branch['id'],
+                              ));
                             },
                           );
                         },
@@ -140,16 +140,16 @@ class _WarehousePageState extends State<WarehousePage> {
         ],
       ),
 
-      //add new warehouse button
+      //add new branch button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Warehouse button clicked')),
+            const SnackBar(content: Text('Add branch button clicked')),
           );
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Warehouse",
+          "Add Branch",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

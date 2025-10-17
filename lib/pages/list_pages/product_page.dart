@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_sigma_app/controllers/product_controller.dart';
 import 'package:mobile_sigma_app/widgets/product_card.dart';
-import '../widgets/sidebar_menu.dart';
+import '../../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/pages/details page/product_detail_page.dart';
+
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -106,9 +108,9 @@ class _ProductPageState extends State<ProductPage> {
                           return ProductCard(
                             product: product,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${product['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => ProductDetailPage(
+                                productId: product['id'], 
+                              ));
                             },
                           );
                         },

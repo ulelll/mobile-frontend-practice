@@ -1,25 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/branch_controller.dart';
-import '../widgets/branch_card.dart';
-import '../widgets/sidebar_menu.dart';
-import 'details page/branch_detail_page.dart';
+import '../../controllers/company_controller.dart';
+import '../../widgets/company_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import '../details page/company_detail_page.dart';
+import '../../routes/routes.dart';
 
-class BranchPage extends StatefulWidget {
-  const BranchPage({super.key});
+
+
+class CompanyPage extends StatefulWidget {
+  const CompanyPage({super.key});
 
   @override
-  State<BranchPage> createState() => _BranchPageState();
+  State<CompanyPage> createState() => _CompanyPageState();
 }
 
-class _BranchPageState extends State<BranchPage> {
+class _CompanyPageState extends State<CompanyPage> {
   bool _isSidebarOpen = false;
-  final BranchController controller = Get.put(BranchController());
+  final CompanyController controller = Get.put(CompanyController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchBranches();
+    controller.fetchCompanies();
   }
 
   @override
@@ -47,7 +50,7 @@ class _BranchPageState extends State<BranchPage> {
                         },
                       ),
                       const Text(
-                        "Branch",
+                        "Company",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
@@ -76,7 +79,7 @@ class _BranchPageState extends State<BranchPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search Branch...",
+                      hintText: "Search company...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -89,26 +92,26 @@ class _BranchPageState extends State<BranchPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // branch List
+                  // Company List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.branches.isEmpty) {
-                        return const Center(child: Text('No branches found'));
+                      if (controller.companies.isEmpty) {
+                        return const Center(child: Text('No companies found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.branches.length,
+                        itemCount: controller.companies.length,
                         itemBuilder: (context, index) {
-                          final branch = controller.branches[index];
-                          return BranchCard(
-                            branch: branch,
+                          final company = controller.companies[index];
+                          return CompanyCard(
+                            company: company,
                             onTap: () {
-                              Get.to(() => BranchDetailPage(
-                                branchId: branch['id'],
+                              Get.to(() => CompanyDetailPage(
+                                companyId: company['id'], 
                               ));
                             },
                           );
@@ -140,16 +143,14 @@ class _BranchPageState extends State<BranchPage> {
         ],
       ),
 
-      //add new branch button
+      //add new company button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add branch button clicked')),
-          );
+          Get.toNamed(Routes.companyCreateRoute());
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Branch",
+          "Add Company",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

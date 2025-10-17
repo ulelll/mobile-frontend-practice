@@ -5,7 +5,7 @@ import 'package:mobile_sigma_app/controllers/user_profile.dart';
 class ProfilePage extends StatelessWidget {
   final controller = Get.put(UserProfileController());
 
-  ProfilePage({Key? key}) : super(key: key);
+  ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class ProfilePage extends StatelessWidget {
                 height: 120,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [const Color.fromARGB(255, 201, 34, 34)!, const Color.fromARGB(255, 82, 70, 70)!],
+                    colors: [const Color.fromARGB(255, 201, 34, 34), const Color.fromARGB(255, 82, 70, 70)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),

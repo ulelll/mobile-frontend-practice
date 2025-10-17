@@ -86,4 +86,8 @@ class StorageService {
     await clearSession();
     return null;
   }
+
+//   static Future<void> clearTokens() async {
+//   await clearSession();
+// }
 }

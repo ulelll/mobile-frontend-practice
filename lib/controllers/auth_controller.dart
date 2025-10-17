@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:mobile_sigma_app/api/api_service.dart';
 import 'package:mobile_sigma_app/utils/storage_service.dart';
-import 'package:flutter/material.dart';
 
 class AuthController extends GetxController {
   final isLoading = false.obs;
