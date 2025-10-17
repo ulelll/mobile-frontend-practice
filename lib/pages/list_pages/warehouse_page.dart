@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/branch_controller.dart';
-import '../widgets/branch_card.dart';
-import '../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/controllers/warehouse_controller.dart';
+import '../../widgets/warehouse_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import '../details page/warehouse_detail_page.dart';
+import 'package:mobile_sigma_app/routes/routes.dart';
 
-class BranchPage extends StatefulWidget {
-  const BranchPage({super.key});
+class WarehousePage extends StatefulWidget {
+  const WarehousePage({super.key});
 
   @override
-  State<BranchPage> createState() => _BranchPageState();
+  State<WarehousePage> createState() => _WarehousePageState();
 }
 
-class _BranchPageState extends State<BranchPage> {
+class _WarehousePageState extends State<WarehousePage> {
   bool _isSidebarOpen = false;
-  final BranchController controller = Get.put(BranchController());
+  final  WarehouseController controller = Get.put(WarehouseController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchBranches();
+    controller.fetchWarehouses();
   }
 
   @override
@@ -46,16 +48,28 @@ class _BranchPageState extends State<BranchPage> {
                         },
                       ),
                       const Text(
-                        "Branch",
+                        "Warehouse",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                           color: Color(0xFF303030),
                         ),
                       ),
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/rukia.jpg'),
-                      ),
+                        Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            Get.toNamed('/profile');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('assets/rukia.jpg'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -63,7 +77,7 @@ class _BranchPageState extends State<BranchPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search Branch...",
+                      hintText: "Search warehouse...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -76,27 +90,27 @@ class _BranchPageState extends State<BranchPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // branch List
+                  // warehause List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.branches.isEmpty) {
-                        return const Center(child: Text('No branches found'));
+                      if (controller.warehouses.isEmpty) {
+                        return const Center(child: Text('No warehouses found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.branches.length,
+                        itemCount: controller.warehouses.length,
                         itemBuilder: (context, index) {
-                          final branch = controller.branches[index];
-                          return BranchCard(
-                            branch: branch,
+                          final warehouse = controller.warehouses[index];
+                          return WarehouseCard(
+                            warehouse: warehouse,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${branch['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => WarehouseDetailPage(
+                                warehouseId: warehouse['id'],
+                              ));
                             },
                           );
                         },
@@ -127,16 +141,14 @@ class _BranchPageState extends State<BranchPage> {
         ],
       ),
 
-      //add new branch button
+      //add new warehouse button
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add branch button clicked')),
-          );
+         onPressed: () {
+          Get.toNamed(Routes.warehouseCreateRoute());
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Branch",
+          "Add Warehouse",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

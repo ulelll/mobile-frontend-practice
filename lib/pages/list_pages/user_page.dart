@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_sigma_app/controllers/warehouse_controller.dart';
-import '../controllers/company_controller.dart';
-import '../widgets/warehouse_card.dart';
-import '../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/pages/details%20page/user_detail_page.dart';
+import '../../controllers/user_controller.dart';
+import '../../widgets/user_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/routes/routes.dart';
 
-class WarehousePage extends StatefulWidget {
-  const WarehousePage({super.key});
+class UserPage extends StatefulWidget {
+  const UserPage({super.key});
 
   @override
-  State<WarehousePage> createState() => _WarehousePageState();
+  State<UserPage> createState() => _UserPageState();
 }
 
-class _WarehousePageState extends State<WarehousePage> {
+class _UserPageState extends State<UserPage> {
   bool _isSidebarOpen = false;
-  final  WarehouseController controller = Get.put(WarehouseController());
+  final UserController controller = Get.put(UserController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchWarehouses();
+    controller.fetchUsers();
   }
 
   @override
@@ -47,16 +48,28 @@ class _WarehousePageState extends State<WarehousePage> {
                         },
                       ),
                       const Text(
-                        "Warehouse",
+                        "Users",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                           color: Color(0xFF303030),
                         ),
                       ),
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/rukia.jpg'),
-                      ),
+                        Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            Get.toNamed('/profile');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('assets/rukia.jpg'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -64,7 +77,7 @@ class _WarehousePageState extends State<WarehousePage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search warehouse...",
+                      hintText: "Search user...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -77,27 +90,27 @@ class _WarehousePageState extends State<WarehousePage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // warehause List
+                  // Company List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.warehouses.isEmpty) {
-                        return const Center(child: Text('No warehouses found'));
+                      if (controller.users.isEmpty) {
+                        return const Center(child: Text('No usersfound'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.warehouses.length,
+                        itemCount: controller.users.length,
                         itemBuilder: (context, index) {
-                          final warehouse = controller.warehouses[index];
-                          return WarehouseCard(
-                            warehouse: warehouse,
+                          final user = controller.users[index];
+                          return UserCard(
+                            user: user,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${warehouse['name']}")), //nanti ganti jadi navigasi ke page detail
-                              );
+                              Get.to(() => UserDetailPage(
+                                userId: user['id'], 
+                              ));
                             },
                           );
                         },
@@ -128,16 +141,14 @@ class _WarehousePageState extends State<WarehousePage> {
         ],
       ),
 
-      //add new warehouse button
+      //add new company button
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Warehouse button clicked')),
-          );
+         onPressed: () {
+          Get.toNamed(Routes.userCreateRoute());
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Warehouse",
+          "Add new user",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

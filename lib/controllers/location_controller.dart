@@ -1,83 +1,76 @@
 import 'package:get/get.dart';
 import 'package:mobile_sigma_app/api/api_service.dart';
 
-class BranchController extends GetxController {
-  var branches = <dynamic>[].obs;
-  var isLoading = false.obs;
-  //dropdown location
+class LocationController extends GetxController {
   var provinces = <dynamic>[].obs;
   var districts = <dynamic>[].obs;
   var subdistricts = <dynamic>[].obs;
   var wards = <dynamic>[].obs;
   var zipcodes = <dynamic>[].obs;
- 
-//list
-  Future<void> fetchBranches() async {
-    isLoading.value = true;
-    final data = await ApiService.getBranches();
-    if (data != null) {
-      branches.value = data;
-    }
-    isLoading.value = false;
-  }
 
-//remove
-  void removeBranchById(String branchId) {
-    branches.value = branches.where((b) => b['id'] != branchId).toList();
-  }
+  var isLoading = false.obs;
 
-    // create
-  Future<bool> createBranch(Map<String, dynamic> payload) async {
-    isLoading.value = true;
-    final success = await ApiService.createResource('branches', payload);
-    isLoading.value = false;
-    return success;
-  }
-
-  //update
-  Future<bool> updateBranch(String id, Map<String, dynamic> payload) async {
-    isLoading.value = true;
-    final success = await ApiService.updateResource('branches', id, payload);
-    isLoading.value = false;
-    return success;
-  }
-
-  // detail
-  Future<Map<String, dynamic>?> getBranchesDetail(String id) async {
-    isLoading.value = true;
-    final data = await ApiService.getBranchesDetail(id);
-    isLoading.value = false;
-    return data;
-  }
-
-  //location 
+  // ✅ Load provinces
   Future<void> loadProvinces() async {
+    isLoading(true);
     final data = await ApiService.getProvinces();
     if (data != null) provinces.value = data;
+    isLoading(false);
   }
 
+  // ✅ Load districts
   Future<void> loadDistricts(String provinceId) async {
+    isLoading(true);
     final data = await ApiService.getDistricts(provinceId);
     if (data != null) districts.value = data;
+    isLoading(false);
   }
 
+  // ✅ Load subdistricts
   Future<void> loadSubdistricts(String districtId) async {
+    isLoading(true);
     final data = await ApiService.getSubdistricts(districtId);
     if (data != null) subdistricts.value = data;
+    isLoading(false);
   }
 
+  // ✅ Load wards
   Future<void> loadWards(String subdistrictId) async {
+    isLoading(true);
     final data = await ApiService.getWards(subdistrictId);
     if (data != null) wards.value = data;
+    isLoading(false);
   }
 
+  // ✅ Load zipcodes
   Future<void> loadZipcodes(String wardId) async {
+    isLoading(true);
     final data = await ApiService.getZipcodes(wardId);
     if (data != null) zipcodes.value = data;
+    isLoading(false);
   }
 
+  // ✅ Autofill from zipcode
   Future<Map<String, dynamic>?> autofillFromZip(String zip) async {
     return await ApiService.getLocationFromZipcode(zip);
   }
 
+  // ✅ Optional: clear when user changes higher level dropdown
+  void clearBelow(String level) {
+    if (level == 'province') {
+      districts.clear();
+      subdistricts.clear();
+      wards.clear();
+      zipcodes.clear();
+    } else if (level == 'district') {
+      subdistricts.clear();
+      wards.clear();
+      zipcodes.clear();
+    } else if (level == 'subdistrict') {
+      wards.clear();
+      zipcodes.clear();
+    } else if (level == 'ward') {
+      zipcodes.clear();
+    }
+  }
 }

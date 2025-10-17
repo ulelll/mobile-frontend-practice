@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:mobile_sigma_app/controllers/product_controller.dart';
-import 'package:mobile_sigma_app/widgets/product_card.dart';
-import '../widgets/sidebar_menu.dart';
+import '../../controllers/company_controller.dart';
+import '../../widgets/company_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import '../details page/company_detail_page.dart';
+import '../../routes/routes.dart';
 
-class ProductPage extends StatefulWidget {
-  const ProductPage({super.key});
+
+
+class CompanyPage extends StatefulWidget {
+  const CompanyPage({super.key});
 
   @override
-  State<ProductPage> createState() => _ProductPageState();
+  State<CompanyPage> createState() => _CompanyPageState();
 }
 
-class _ProductPageState extends State<ProductPage> {
+class _CompanyPageState extends State<CompanyPage> {
   bool _isSidebarOpen = false;
-  final ProductController controller = Get.put(ProductController());
+  final CompanyController controller = Get.put(CompanyController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchProducts();
+    controller.fetchCompanies();
   }
 
   @override
@@ -46,16 +50,28 @@ class _ProductPageState extends State<ProductPage> {
                         },
                       ),
                       const Text(
-                        "Product",
+                        "Company",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                           color: Color(0xFF303030),
                         ),
                       ),
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/rukia.jpg'),
-                      ),
+                        Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            Get.toNamed('/profile');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('assets/rukia.jpg'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -63,7 +79,7 @@ class _ProductPageState extends State<ProductPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search Products...",
+                      hintText: "Search company...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -76,27 +92,27 @@ class _ProductPageState extends State<ProductPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // product List
+                  // Company List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.products.isEmpty) {
-                        return const Center(child: Text('No products found'));
+                      if (controller.companies.isEmpty) {
+                        return const Center(child: Text('No companies found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.products.length,
+                        itemCount: controller.companies.length,
                         itemBuilder: (context, index) {
-                          final product = controller.products[index];
-                          return ProductCard(
-                            product: product,
+                          final company = controller.companies[index];
+                          return CompanyCard(
+                            company: company,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${product['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => CompanyDetailPage(
+                                companyId: company['id'], 
+                              ));
                             },
                           );
                         },
@@ -127,16 +143,14 @@ class _ProductPageState extends State<ProductPage> {
         ],
       ),
 
-      //add new product button
+      //add new company button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add product button clicked')),
-          );
+          Get.toNamed(Routes.companyCreateRoute());
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add product",
+          "Add Company",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

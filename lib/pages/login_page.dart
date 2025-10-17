@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import '../controllers/auth_controller.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+  const LoginPage({super.key});
 
   @override
   State<LoginPage> createState() => _LoginPageState();

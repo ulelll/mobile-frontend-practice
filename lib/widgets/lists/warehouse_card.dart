@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class BranchCard extends StatelessWidget {
-  final Map<String, dynamic> branch;
-  final VoidCallback? onTap;
+class WarehouseCard extends StatelessWidget {
+  final Map<String, dynamic> warehouse;
+  final VoidCallback? onTap; 
 
-  const BranchCard({
+  const WarehouseCard({
     super.key,
-    required this.branch,
+    required this.warehouse,
     this.onTap,
   });
 
   ImageProvider _getImageProvider(String? path) {
     if (path == null || path.isEmpty) {
-      return const AssetImage('assets/default_branch.png'); //default image ntar ganti aja
+      return const AssetImage('assets/default_company.png');
     } else if (path.startsWith('http')) {
       return NetworkImage(path);
     } else {
@@ -39,7 +39,7 @@ class BranchCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
                   image: DecorationImage(
-                    image: _getImageProvider(branch['image']),
+                    image: _getImageProvider(warehouse['image']),
                     fit: BoxFit.cover,
                   ),
                 ),
@@ -51,17 +51,17 @@ class BranchCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      branch['name'] ?? 'Unknown',
+                      warehouse['name'] ?? 'Unknown',
                       style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(branch['address'] ?? ''),
+                    Text(warehouse['description'] ?? ''),
                     const SizedBox(height: 4),
-                    Text('PIC: ${branch['pic_name'] ?? '-'}'),
-                    Text('📞 ${branch['pic_contact'] ?? '-'}'),
+                    Text('PIC: ${warehouse['pic_name'] ?? '-'}'),
+                    Text('📞 ${warehouse['pic_contact'] ?? '-'}'),
                   ],
                 ),
               ),

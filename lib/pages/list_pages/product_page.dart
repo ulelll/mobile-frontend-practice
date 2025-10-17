@@ -1,24 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/user_controller.dart';
-import '../widgets/user_card.dart';
-import '../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/controllers/product_controller.dart';
+import 'package:mobile_sigma_app/widgets/product_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import 'package:mobile_sigma_app/pages/details page/product_detail_page.dart';
 
-class UserPage extends StatefulWidget {
-  const UserPage({super.key});
+
+class ProductPage extends StatefulWidget {
+  const ProductPage({super.key});
 
   @override
-  State<UserPage> createState() => _UserPageState();
+  State<ProductPage> createState() => _ProductPageState();
 }
 
-class _UserPageState extends State<UserPage> {
+class _ProductPageState extends State<ProductPage> {
   bool _isSidebarOpen = false;
-  final UserController controller = Get.put(UserController());
+  final ProductController controller = Get.put(ProductController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchUsers();
+    controller.fetchProducts();
   }
 
   @override
@@ -46,16 +48,28 @@ class _UserPageState extends State<UserPage> {
                         },
                       ),
                       const Text(
-                        "Users",
+                        "Product",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                           color: Color(0xFF303030),
                         ),
                       ),
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/rukia.jpg'),
-                      ),
+                       Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            Get.toNamed('/profile');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('assets/rukia.jpg'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -63,7 +77,7 @@ class _UserPageState extends State<UserPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search user...",
+                      hintText: "Search Products...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -76,27 +90,27 @@ class _UserPageState extends State<UserPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Company List
+                  // product List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.users.isEmpty) {
-                        return const Center(child: Text('No usersfound'));
+                      if (controller.products.isEmpty) {
+                        return const Center(child: Text('No products found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.users.length,
+                        itemCount: controller.products.length,
                         itemBuilder: (context, index) {
-                          final user = controller.users[index];
-                          return UserCard(
-                            user: user,
+                          final product = controller.products[index];
+                          return ProductCard(
+                            product: product,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${user['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => ProductDetailPage(
+                                productId: product['id'], 
+                              ));
                             },
                           );
                         },
@@ -127,16 +141,16 @@ class _UserPageState extends State<UserPage> {
         ],
       ),
 
-      //add new company button
+      //add new product button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Company button clicked')),
+            const SnackBar(content: Text('Add product button clicked')),
           );
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Company",
+          "Add product",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,

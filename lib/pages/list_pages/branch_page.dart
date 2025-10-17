@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../controllers/company_controller.dart';
-import '../widgets/company_card.dart';
-import '../widgets/sidebar_menu.dart';
+import '../../controllers/branch_controller.dart';
+import '../../widgets/branch_card.dart';
+import '../../widgets/sidebar_menu.dart';
+import '../details page/branch_detail_page.dart';
 
-class CompanyPage extends StatefulWidget {
-  const CompanyPage({super.key});
+class BranchPage extends StatefulWidget {
+  const BranchPage({super.key});
 
   @override
-  State<CompanyPage> createState() => _CompanyPageState();
+  State<BranchPage> createState() => _BranchPageState();
 }
 
-class _CompanyPageState extends State<CompanyPage> {
+class _BranchPageState extends State<BranchPage> {
   bool _isSidebarOpen = false;
-  final CompanyController controller = Get.put(CompanyController());
+  final BranchController controller = Get.put(BranchController());
 
   @override
   void initState() {
     super.initState();
-    controller.fetchCompanies();
+    controller.fetchBranches();
   }
 
   @override
@@ -46,16 +47,28 @@ class _CompanyPageState extends State<CompanyPage> {
                         },
                       ),
                       const Text(
-                        "Company",
+                        "Branch",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 20,
                           color: Color(0xFF303030),
                         ),
                       ),
-                      const CircleAvatar(
-                        backgroundImage: AssetImage('assets/rukia.jpg'),
-                      ),
+                        Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(50),
+                          onTap: () {
+                            Get.toNamed('/profile');
+                          },
+                          child: const Padding(
+                            padding: EdgeInsets.all(2.0),
+                            child: CircleAvatar(
+                              backgroundImage: AssetImage('assets/rukia.jpg'),
+                            ),
+                          ),
+                        ),
+                      )
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -63,7 +76,7 @@ class _CompanyPageState extends State<CompanyPage> {
                   // Search bar
                   TextField(
                     decoration: InputDecoration(
-                      hintText: "Search company...",
+                      hintText: "Search Branch...",
                       prefixIcon: const Icon(Icons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(20),
@@ -76,27 +89,27 @@ class _CompanyPageState extends State<CompanyPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Company List
+                  // branch List
                   Expanded(
                     child: Obx(() {
                       if (controller.isLoading.value) {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (controller.companies.isEmpty) {
-                        return const Center(child: Text('No companies found'));
+                      if (controller.branches.isEmpty) {
+                        return const Center(child: Text('No branches found'));
                       }
 
                       return ListView.builder(
-                        itemCount: controller.companies.length,
+                        itemCount: controller.branches.length,
                         itemBuilder: (context, index) {
-                          final company = controller.companies[index];
-                          return CompanyCard(
-                            company: company,
+                          final branch = controller.branches[index];
+                          return BranchCard(
+                            branch: branch,
                             onTap: () {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("Clicked on ${company['name']}")), //nanti ganti jadi navigasi ke page detail 
-                              );
+                              Get.to(() => BranchDetailPage(
+                                branchId: branch['id'],
+                              ));
                             },
                           );
                         },
@@ -127,16 +140,16 @@ class _CompanyPageState extends State<CompanyPage> {
         ],
       ),
 
-      //add new company button
+      //add new branch button
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Add Company button clicked')),
+            const SnackBar(content: Text('Add branch button clicked')),
           );
         },
         icon: const Icon(Icons.add, color: Colors.white),
         label: const Text(
-          "Add Company",
+          "Add Branch",
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Colors.redAccent,
